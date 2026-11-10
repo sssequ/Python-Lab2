@@ -1,16 +1,14 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from ipv6 import is_valid_ipv6
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+# точка входа: ввод адреса и вывод результата
+def main():
+    address = input("введите ipv6-адрес: ").strip()
+    if is_valid_ipv6(address):
+        print("адрес корректен")
+    else:
+        print("адрес некорректен")
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()
