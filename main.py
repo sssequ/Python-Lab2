@@ -1,5 +1,6 @@
 import json
 from html import unescape
+from pathlib import Path
 from urllib.request import urlopen
 
 from ipv6 import find_ipv6_addresses, is_valid_ipv6
@@ -24,9 +25,10 @@ def read_page_text(url):
 
 # сохраняет результат последнего действия в json
 def save_result(result):
-    with open("result.json", "w", encoding="utf-8") as file:
+    result_path = Path(__file__).resolve().with_name("result.json")
+    with result_path.open("w", encoding="utf-8") as file:
         json.dump(result, file, ensure_ascii=False, indent=4)
-    print("результат сохранён в result.json")
+    print(f"результат сохранён в {result_path}")
 
 
 def main():
