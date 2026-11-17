@@ -1,4 +1,6 @@
 import json
+from html import unescape
+from urllib.request import urlopen
 
 from ipv6 import find_ipv6_addresses, is_valid_ipv6
 
@@ -7,8 +9,17 @@ from ipv6 import find_ipv6_addresses, is_valid_ipv6
 MENU = """
 1. проверить ipv6-адрес
 2. найти ipv6-адреса в файле
+3. найти ipv6-адреса на веб-странице
 0. выйти из программы
 """
+
+
+# загружает страницу и декодирует её содержимое
+def read_page_text(url):
+    with urlopen(url, timeout=10) as response:
+        encoding = response.headers.get_content_charset() or "utf-8"
+        text = response.read().decode(encoding, errors="replace")
+        return unescape(text)
 
 
 # сохраняет результат последнего действия в json
@@ -46,6 +57,21 @@ def main():
                 for address in addresses:
                     print(address)
                 save_result({"файл": filename, "адреса": addresses})
+
+            elif choice == "3":
+                url = input("введите ссылку на веб-страницу: ").strip()
+                try:
+                    if not url.lower().startswith(("http://", "https://")):
+                        raise ValueError("ссылка должна начинаться с http:// или https://")
+                    addresses = find_ipv6_addresses(read_page_text(url))
+                except (OSError, ValueError, LookupError) as error:
+                    print(f"ошибка загрузки страницы: {error}")
+                    continue
+                if not addresses:
+                    print("ipv6-адреса не найдены")
+                for address in addresses:
+                    print(address)
+                save_result({"ссылка": url, "адреса": addresses})
 
             else:
                 print("такого действия нет, выберите пункт меню")
